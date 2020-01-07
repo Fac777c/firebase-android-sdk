@@ -97,6 +97,49 @@ public class FirebaseABTWithoutAnalyticsTest {
   }
 
   @Test
+  public void reportRunningExperimentsWithoutAnalytics_throwsAbtException() {
+    List<AbtExperimentInfo> experimentInfos = new ArrayList<>();
+    experimentInfos.add(
+        createExperimentInfo("expid1", /*experimentStartTimeInEpochMillis=*/ 1000L));
+    experimentInfos.add(
+        createExperimentInfo("expid2", /*experimentStartTimeInEpochMillis=*/ 2000L));
+
+    AbtException actualException =
+        assertThrows(
+            AbtException.class, () -> firebaseAbt.reportRunningExperiments(experimentInfos));
+    assertThat(actualException).hasMessageThat().contains("Analytics");
+  }
+
+  @Test
+  public void reportRunningExperimentsWithoutAnalytics_experimentsListIsNull_throwsAbtException() {
+    AbtException actualException =
+        assertThrows(
+            AbtException.class,
+            () -> firebaseAbt.reportRunningExperiments(/*replacementExperiments=*/ null));
+    assertThat(actualException).hasMessageThat().contains("Analytics");
+  }
+
+  @Test
+  public void reportActiveExperimentWithoutAnalytics_throwsAbtException() {
+    AbtException actualException =
+        assertThrows(
+            AbtException.class,
+            () ->
+                firebaseAbt.reportActiveExperiment(
+                    createExperimentInfo("expid1", /*experimentStartTimeInEpochMillis=*/ 1000L)));
+    assertThat(actualException).hasMessageThat().contains("Analytics");
+  }
+
+  @Test
+  public void reportActiveExperimentWithoutAnalytics_experimentsListIsNull_throwsAbtException() {
+    AbtException actualException =
+        assertThrows(
+            AbtException.class,
+            () -> firebaseAbt.reportActiveExperiment(/*replacementExperiments=*/ null));
+    assertThat(actualException).hasMessageThat().contains("Analytics");
+  }
+
+  @Test
   public void removeAllExperimentsWithoutAnalytics_throwsAbtException() {
     AbtException actualException =
         assertThrows(AbtException.class, () -> firebaseAbt.removeAllExperiments());
